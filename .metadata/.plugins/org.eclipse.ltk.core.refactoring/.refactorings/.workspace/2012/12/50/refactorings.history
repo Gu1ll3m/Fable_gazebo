@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Delete resource &apos;joint_controller&apos;" deleteContents="false" description="Delete resource &apos;joint_controller&apos;" element1="/joint_controller" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1355079613563"/>&#x0A;<refactoring comment="Delete resource &apos;controller_fable&apos;" deleteContents="false" description="Delete resource &apos;controller_fable&apos;" element1="/controller_fable" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1355079622432"/>
+</session>

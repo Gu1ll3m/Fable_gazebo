@@ -1,0 +1,212 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" 
+       xmlns:gazebo="http://playerstage.sourceforge.net/gazebo/xmlschema/#gz"
+       xmlns:model="http://playerstage.sourceforge.net/gazebo/xmlschema/#model"
+       xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface"
+       xmlns:body="http://playerstage.sourceforge.net/gazebo/xmlschema/#body"
+       xmlns:geom="http://playerstage.sourceforge.net/gazebo/xmlschema/#geom"
+       xmlns:joint="http://playerstage.sourceforge.net/gazebo/xmlschema/#joint"
+       xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+       name="Fable_robot">
+
+<xacro:property name="pi" value="3.1415926535897931" />
+<xacro:property name="Nogravity" value="False" />  <!-- gravity -->
+
+<xacro:property name="d1" value=".1103" /> <!-- 4way branch longitud-->
+<xacro:property name="l1" value=".06" />   <!-- dist between short link and neck origins -->
+<xacro:property name="l2" value=".0452" /> <!-- dist between neck and base origins -->
+<xacro:property name="m1" value=".300" />  <!-- mass of long link  .447-->
+<xacro:property name="m2" value=".017" />  <!-- mass of neck_link-->
+<xacro:property name="m3" value=".1" />  <!-- mass of short link  .164-->
+<xacro:property name="m4" value=".45" />  <!-- mass of 4wayBranch  .276-->
+<xacro:property name="h1" value=".2" />    <!-- Inicial hight -->
+<xacro:property name="AXdamping" value="0.15" />  <!-- Servo AX12 damping    0.15 (Nms)/rad    -->
+<xacro:property name="AXfriction" value="0.13"/> <!-- Servo AX12 friction  0.13 Nm -->
+<xacro:property name="maxeffort" value="1.18" />  <!-- Servo AX12 max effort  (Nm) -->
+<xacro:property name="maxvelocity" value="12" />  <!-- Servo AX12 max velocity (rads)-->
+
+<link name="dummy">
+</link>
+
+<link name="way4_branch">
+      <visual>
+         <geometry> 
+            <mesh filename="package://fable/meshes/4way-gazebo.stl" scale="0.001 0.001 0.001"/> 
+         </geometry>
+         <origin xyz="0 0 ${h1}" rpy="0 0 0" />
+      </visual>
+
+      <collision>
+         <geometry>
+            <mesh filename="package://fable/meshes/4way-gazebo.stl" scale="0.001 0.001 0.001"/> 
+         </geometry>
+         <origin xyz="0 0 ${h1}" rpy="0 0 0" />
+      </collision>
+      
+      <inertial>
+	 <origin xyz="0 0 ${h1}" rpy="0 0 0" />
+         <mass value="${m4}" />
+         <inertia ixx="0.00047"  ixy="0.0"  ixz="0.0" 
+                             iyy="0.00047"  iyz="0.0" 
+                                        izz="0.0005" />
+      </inertial>
+</link>
+
+<joint name="dummy_joint" type="fixed">
+   <parent link="dummy"/>
+   <child link="way4_branch"/>
+</joint> 
+
+<xacro:macro name="DOF2" params="prefix refx refy turnx turny turnz mycolor">
+
+   <link name="${prefix}_short_link"> 
+      <visual>
+         <geometry>
+	     <mesh filename="package://fable/meshes/2dof-jm-top.stl" scale="0.001 0.001 0.001"/> 
+         </geometry>
+	 <origin xyz="0 0 0" rpy="${pi} 0 0" /> 
+      </visual>
+
+      <collision>
+         <geometry>
+            <mesh filename="package://fable/meshes/2dof-jm-top.stl" scale="0.001 0.001 0.001"/> 
+         </geometry>
+	 <origin xyz="0 0 0" rpy="${pi} 0 0" /> 
+      </collision> 
+      
+      <inertial>
+	 <origin xyz="0 0 .03" rpy="0 0 0" />
+         <mass value="${m3}" />
+         <inertia ixx="0.00027"  ixy="0.0"  ixz="0.0" 
+                             iyy="0.00027"  iyz="0.0" 
+                                        izz="0.0002" />
+      </inertial>
+   </link>
+
+   <link name="${prefix}_neck_link">
+      <visual>
+         <geometry>
+	   <mesh filename="package://fable/meshes/neck-2dof-simple.stl" scale="0.001 0.001 0.001"/> 
+         </geometry>
+         <origin xyz="0 0 0" rpy="0 0 0" />
+      </visual>
+
+      <collision>
+         <geometry>
+           <mesh filename="package://fable/meshes/neck-2dof-simple.stl" scale="0.001 0.001 0.001"/>
+         </geometry>
+         <origin xyz="0 0 0" rpy="0 0 0" />
+      </collision>
+      
+      <inertial>
+	 <origin xyz="0 0 .022" rpy="0 0 0" />
+         <mass value="${m2}" />
+         <inertia ixx="0.0000054"  ixy="0.0"  ixz="0.0" 
+                             iyy="0.0000054"  iyz="0.0" 
+                                        izz="0.0000058" />
+      </inertial>
+   </link>
+
+   <link name="${prefix}_base_link">   <!--  long_link  -->
+      <visual>
+         <geometry>   
+	   <mesh filename="package://fable/meshes/2dof-bottom.stl" scale="0.001 0.001 0.001"/>
+         </geometry>
+	 <origin xyz="0 0 0" rpy="${-pi} 0 ${-pi}" />
+      </visual>
+
+      <collision>
+         <geometry>
+            <mesh filename="package://fable/meshes/2dof-bottom.stl" scale="0.001 0.001 0.001"/> 
+         </geometry>
+	 <origin xyz="0 0 0" rpy="${-pi} 0 ${-pi}" />   
+      </collision> 
+      
+      <inertial>
+	 <origin xyz="0 0 0.055" rpy="0 0 0" />    
+	 <mass value="${m1}" />
+         <inertia ixx="0.0008"  ixy="0.0"  ixz="0.0" 
+                               iyy="0.0008"  iyz="0.0" 
+                                          izz="0.0009" />
+      </inertial>
+   </link>
+
+<!-- fix joints for each one of the legs and the 4 way branch -->
+   <joint name="${prefix}_fix_joint" type="fixed">
+      <parent link="way4_branch"/>
+      <child link="${prefix}_short_link"/>
+      <origin xyz="${refx*(d1/2)} ${refy*(d1/2)} ${h1}" rpy="${turnx*(pi/2)} ${turny*(pi/2)} ${turnz*(pi/2)}" />
+   </joint> 
+
+   <joint name="${prefix}_motor_short" type="revolute">
+      <limit effort="${maxeffort}" lower="-1.57" upper="1.57" velocity="${maxvelocity}"/>
+      <dynamics damping="${AXdamping}" friction="${AXfriction}"/>
+      <parent link="${prefix}_short_link"/>
+      <child link="${prefix}_neck_link"/>
+      <origin xyz="0 0 ${l1}" rpy="0 0 0" />   <!-- offset and angle from parent to child -->
+      <axis xyz="${turny} ${turnx} 0" />			       <!-- axis of rotation -->
+   </joint>
+
+   <joint name="${prefix}_motor_base" type="revolute">
+      <limit effort="${maxeffort}" lower="-1.57" upper="1.57" velocity="${maxvelocity}"/>
+      <dynamics damping="${AXdamping}" friction="${AXfriction}"/>
+      <parent link="${prefix}_neck_link"/>
+      <child link="${prefix}_base_link"/>
+      <origin xyz="0 0 ${l2}" rpy="0 0 0" />   <!-- offset and angle from grandparent to child   -->
+      <axis xyz="${turnx} ${turny} 0" />			       <!-- axis of rotation -->
+   </joint>  
+ 
+    <!-- Transmission is important to link the joints and the controller -->
+   <transmission name="${prefix}_motor_base_trans" type="pr2_mechanism_model/SimpleTransmission">
+        <actuator name="${prefix}_motor_base_actuator" />
+        <joint name="${prefix}_motor_base" />
+        <mechanicalReduction>1</mechanicalReduction>
+    </transmission>
+    
+   <transmission name="${prefix}_motor_short_trans" type="pr2_mechanism_model/SimpleTransmission">
+        <actuator name="${prefix}_motor_short_actuator" />
+        <joint name="${prefix}_motor_short" />
+        <mechanicalReduction>1</mechanicalReduction>
+   </transmission>
+
+   <!-- Gazebo plugin! here one can used the gazebo library -->
+   <gazebo reference="${prefix}_base_link">
+      <material>Gazebo/White</material>
+      <turnGravityOff>${Nogravity}</turnGravityOff>
+      <selfCollide>treu</selfCollide>
+   </gazebo>
+
+   <gazebo reference="${prefix}_neck_link">
+      <material>Gazebo/Grey</material>
+      <turnGravityOff>${Nogravity}</turnGravityOff>
+      <selfCollide>true</selfCollide>
+   </gazebo>
+
+   <gazebo reference="${prefix}_short_link">
+      <material>Gazebo/White</material>
+      <turnGravityOff>${Nogravity}</turnGravityOff>
+      <selfCollide>true</selfCollide>
+   </gazebo>
+</xacro:macro>
+  
+<gazebo reference="way4_branch">
+   <material>Gazebo/Grey</material>
+   <turnGravityOff>${Nogravity}</turnGravityOff>
+   <selfCollide>true</selfCollide>
+</gazebo>
+
+
+<gazebo>
+  <controller:gazebo_ros_controller_manager name="gazebo_ros_controller_manager" plugin="libgazebo_ros_controller_manager.so">
+    <alwaysOn>true</alwaysOn>
+    <updateRate>1000.0</updateRate>  
+  </controller:gazebo_ros_controller_manager>
+</gazebo>
+
+
+<xacro:DOF2 prefix="right" refx="0" refy="1" turnx="0" turny="1" turnz="1" mycolor="Red"/>
+<xacro:DOF2 prefix="left" refx="0" refy="-1" turnx="0" turny="-1" turnz="1" mycolor="Blue"/>
+<xacro:DOF2 prefix="front" refx="1" refy="0" turnx="0" turny="1" turnz="0" mycolor="Red"/>
+<xacro:DOF2 prefix="back" refx="-1" refy="0" turnx="0" turny="-1" turnz="0" mycolor="Red"/>
+
+</robot>

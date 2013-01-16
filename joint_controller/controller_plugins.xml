@@ -1,0 +1,7 @@
+<library path="lib/libJointController_lib">
+  <class
+      name="joint_controller/JointControllerPlugin"
+      type="gazebo::joint_controller"
+      base_class_type="pr2_controller_interface::Controller" />
+</library>
+      <!-- name="joint_controller/JointControllerPlugin" -->

@@ -1,0 +1,64 @@
+#include "joint_controller/joint_controller.h"
+#include <pluginlib/class_list_macros.h>
+#include <stdio.h>
+
+namespace gazebo{
+
+///Controller initialitzation in non-realtime
+bool joint_controller::init(pr2_mechanism_model::RobotState *robot, ros::NodeHandle &n)
+{
+   fprintf(stderr, "Joint Controller::init   check point 1\n");
+   
+//    std::string joint_name;
+//    if (!n.getParam("joint_name", joint_name))
+//    {
+//       ROS_ERROR("No joint given in namespace: '%s')", n.getNamespace().c_str());
+//       return false;
+//    }
+// 
+//    joint_state_ = robot->getJointState(joint_name);
+//    if(!joint_state_)
+//    {
+//      ROS_ERROR("Joint Controller cound not find joint named '%s'", joint_name.c_str());
+//      return false;
+//    }
+  //-------------------------------------- 
+  typedef std::vector<pr2_mechanism_model::JointState*> jointvec_t;
+  jointvec_t const & jvec(robot->model_->joints_);
+  for (jointvec_t::const_iterator ij(jvec.begin()); ij != jvec.end(); ++ij) {
+    fprintf(stderr, "  n: %s\tt: %d\tmin: %g\tmax: %g\n",
+	       (*ij)->name_.c_str(), (*ij)->type_, (*ij)->joint_limit_min_, (*ij)->joint_limit_max_);
+  }
+  
+   return true;
+}
+
+/// Controller startup in realtime
+void joint_controller::starting()
+{
+   init_pos_ = joint_state_->position_;
+}
+
+
+/// Controller update loop in realtime   (gets called at 1000Hz)
+void joint_controller::update()
+{
+   fprintf(stderr, "Update executed\n");
+   double desired_pos = init_pos_ + 5 * sin(ros::Time::now().toSec());
+   double current_pos = joint_state_->position_;
+   joint_state_->commanded_effort_ = -5 * (current_pos - desired_pos);
+}
+
+///Controller stopping in realtime
+void joint_controller::stopping()
+{}
+
+} //namespace
+
+/// Register controller to pluginlib
+PLUGINLIB_DECLARE_CLASS(joint_controller,JointControllerPlugin, 
+                        gazebo::joint_controller, 
+                        pr2_controller_interface::Controller)
+
+//PLUGINLIB_DECLARE_CLASS(example_pkg, Rectangle, rectangle_namespace::Rectangle, 
+//polygon_namespace::Polygon)
