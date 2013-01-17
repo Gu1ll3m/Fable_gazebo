@@ -1,0 +1,16 @@
+<package>
+  <description brief="fable">
+
+     fable
+
+  </description>
+  <author>Willy</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/fable</url>
+  <depend package="robot_state_publisher"/>
+  <depend package="gazebo"/>
+
+</package>
+
+

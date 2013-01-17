@@ -1,0 +1,31 @@
+left_base_joint_controller:
+  type: joint_controller/JointControllerPlugin
+  joint_name: left_motor_base
+
+right_base_joint_controller:
+  type: joint_controller/JointControllerPlugin
+  joint_name: right_motor_base
+  
+front_base_joint_controller:
+  type: joint_controller/JointControllerPlugin
+  joint_name: front_motor_base
+  
+back_base_joint_controller:
+  type: joint_controller/JointControllerPlugin
+  joint_name: back_motor_base
+
+left_short_joint_controller:
+  type: joint_controller/JointControllerPlugin
+  joint_name: left_motor_short
+
+right_short_joint_controller:
+  type: joint_controller/JointControllerPlugin
+  joint_name: right_motor_short
+  
+front_short_joint_controller:
+  type: joint_controller/JointControllerPlugin
+  joint_name: front_motor_short
+  
+back_short_joint_controller:
+  type: joint_controller/JointControllerPlugin
+  joint_name: back_motor_short
