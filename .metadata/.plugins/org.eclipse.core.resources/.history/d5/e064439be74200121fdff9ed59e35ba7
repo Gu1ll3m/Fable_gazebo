@@ -1,0 +1,28 @@
+<launch>
+  <rosparam file="$(find joint_controller)/fable.yaml" 
+            command="load" />
+  
+  <include file="$(find pr2_controller_manager)/controller_manager.launch" />
+  
+  <node pkg="pr2_controller_manager"
+        type="spawner"
+        name="left_base_joint_controller"
+        args="left_joint_controller"
+        output="screen" />
+        
+  <node pkg="pr2_controller_manager"
+        type="spawner"
+        name="right_base_joint_controller"
+        args="right_joint_controller"
+        output="screen" />
+  <node pkg="pr2_controller_manager"
+        type="spawner"
+        name="front_base_joint_controller"
+        args="front_joint_controller"
+        output="screen" />
+  <node pkg="pr2_controller_manager"
+        type="spawner"
+        name="back_base_joint_controller"
+        args="back_joint_controller"
+        output="screen" />
+</launch>
