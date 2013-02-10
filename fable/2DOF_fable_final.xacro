@@ -173,7 +173,7 @@
    <gazebo reference="${prefix}_base_link">
       <material>Gazebo/White</material>
       <turnGravityOff>${Nogravity}</turnGravityOff>
-      <selfCollide>treu</selfCollide>
+      <selfCollide>true</selfCollide>
    </gazebo>
 
    <gazebo reference="${prefix}_neck_link">
